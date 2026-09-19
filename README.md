@@ -1,56 +1,43 @@
-# Welcome to your Expo app 👋
+# Khedma Mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+App mobile (React Native + Expo Router) de la marketplace **Khedma** — même backend, même modèle de données que le [dépôt web](https://github.com/Riadh-Hanachi/khedma), une seule app pour les deux rôles (client et prestataire).
 
-## Get started
+## Démarrer
 
-1. Install dependencies
-
+1. Le backend Khedma doit tourner (voir le [dépôt web](https://github.com/Riadh-Hanachi/khedma) pour l'installation) : `http://localhost:3001/api/v1`.
+2. Installer les dépendances :
    ```bash
    npm install
    ```
-
-2. Start the app
-
+3. Lancer l'app :
    ```bash
    npx expo start
    ```
+   Puis choisir web (`w`), un émulateur Android/iOS, ou scanner le QR code avec [Expo Go](https://expo.dev/go).
 
-In the output, you'll find options to open the app in a
+L'URL de l'API est définie dans `app.json` (`expo.extra.apiUrl`), par défaut `http://localhost:3001/api/v1`. Sur un appareil physique ou un émulateur Android, remplacer `localhost` par l'IP de la machine hébergeant le backend (ou `10.0.2.2` pour l'émulateur Android).
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Périmètre
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Réutilise directement l'API REST du backend NestJS (JWT, mêmes endpoints que le web) — aucune API mobile-spécifique.
 
-## Get a fresh project
+- **Authentification** : connexion/inscription (sélection pays/catégorie), déconnexion.
+- **Navigation par onglets adaptée au rôle** : client (Accueil/Rechercher/Mes demandes/Réservations/Messages/Profil), prestataire (Accueil/Demandes/Mes services/Réservations/Messages/Profil).
+- **Client** : recherche filtrée, profil prestataire public avec réservation (crédit fidélité, code promo, devise dynamique selon le pays), demandes de service (assistant IA de rédaction, matching de prestataires, devis reçus), fidélité & parrainage, promotions.
+- **Prestataire** : gestion des services (CRUD), feed des demandes ouvertes, envoi de devis (assistant IA de brouillon), réservations avec transitions de statut, documents de vérification (upload fichier), abonnement.
+- **Messagerie temps réel** : Socket.IO (même gateway que le web), vérifiée avec un aller-retour de message sans rafraîchissement manuel.
 
-When you're ready, run:
+## Non couvert dans cette première version
 
-```bash
-npm run reset-project
-```
+- Notifications push
+- Build natif signé (testé jusqu'ici via Expo web et Expo Go, pas encore sur un store)
+- Écrans avoués hors périmètre du web MVP (mode B2B avancé, équipe/techniciens, admin)
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Stack technique
 
-### Other setup steps
-
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Expo (React Native) + Expo Router (routing par fichiers, comme l'App Router de Next.js côté web)
+- TypeScript strict
+- AsyncStorage pour la persistance du token JWT et du pays sélectionné
+- socket.io-client pour la messagerie temps réel
+- `@react-native-picker/picker` pour les sélecteurs (pays, catégorie)
+- `expo-document-picker` pour l'upload de documents de vérification
