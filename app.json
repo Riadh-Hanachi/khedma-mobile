@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "extra": {
-      "apiUrl": "http://localhost:3001/api/v1"
+      "apiUrl": "http://192.168.0.189:3011/api/v1"
     },
     "icon": "./assets/images/icon.png",
     "scheme": "khedmamobile",

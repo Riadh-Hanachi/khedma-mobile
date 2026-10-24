@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import { formatRating } from '@/lib/format';
 import { api } from '@/lib/api';
 import { useCountry } from '@/lib/country-context';
 import { Category, Paginated, ProviderProfile } from '@/lib/types';
@@ -63,7 +64,7 @@ export default function HomeScreen() {
                 {p.companyName || `${p.user?.firstName ?? ''} ${p.user?.lastName ?? ''}`}
               </Text>
               <Text style={styles.providerMeta}>
-                {p.category?.name} · ⭐ {p.avgRating || '—'} ({p.reviewsCount})
+                {p.category?.name} · {formatRating(p.avgRating, p.reviewsCount, true)}
               </Text>
             </Pressable>
           ))}

@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useAuth } from '@/lib/auth-context';
 import { useCurrencySymbol } from '@/lib/country-context';
+import { formatRating } from '@/lib/format';
 import { api, ApiError } from '@/lib/api';
 import { DraftQuote, ProviderMatch, Quote, ServiceRequest } from '@/lib/types';
 import { StatusBadge } from '@/components/status-badge';
@@ -209,7 +210,7 @@ export default function RequestDetailScreen() {
             return (
               <View key={m.provider.id} style={styles.card}>
                 <Text style={styles.requestTitle}>{name}</Text>
-                <Text style={styles.muted}>⭐ {m.provider.avgRating || '—'}</Text>
+                <Text style={styles.muted}>{formatRating(m.provider.avgRating, m.provider.reviewsCount)}</Text>
                 <View style={styles.reasonsRow}>
                   {m.reasons.map((r) => (
                     <View key={r} style={styles.reasonChip}>

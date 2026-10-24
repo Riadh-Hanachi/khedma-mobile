@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Link, router } from 'expo-router';
 import { useAuth } from '@/lib/auth-context';
@@ -12,6 +13,7 @@ import { Brand } from '@/constants/theme';
 
 export default function RegisterScreen() {
   const { register } = useAuth();
+  const { ref: scrollRef, scrollToTop } = useScrollToTop();
   const { countries, countryCode: browsingCountryCode } = useCountry();
   const [role, setRole] = useState<UserRole>('client');
   const [categories, setCategories] = useState<Category[]>([]);
@@ -54,6 +56,7 @@ export default function RegisterScreen() {
       router.replace(user.role === 'provider' ? '/(tabs)/services' : '/(tabs)');
     } catch (e) {
       setError(e instanceof ApiError ? e.message : "Inscription impossible");
+      scrollToTop();
     } finally {
       setLoading(false);
     }
@@ -61,7 +64,7 @@ export default function RegisterScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Créer un compte</Text>
 
         <View style={styles.roleRow}>

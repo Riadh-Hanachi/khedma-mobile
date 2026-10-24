@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
+import { formatRating } from '@/lib/format';
 import { api } from '@/lib/api';
 import { useCountry } from '@/lib/country-context';
 import { Category, Paginated, ProviderProfile } from '@/lib/types';
@@ -16,6 +17,10 @@ export default function SearchScreen() {
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState('');
   const [categoryId, setCategoryId] = useState(params.categoryId || '');
+
+  useEffect(() => {
+    setCategoryId(params.categoryId || '');
+  }, [params.categoryId]);
 
   useEffect(() => {
     api.get<Category[]>(`/categories/flat?country=${countryCode}`).then(setCategories).catch(() => setCategories([]));
@@ -59,7 +64,7 @@ export default function SearchScreen() {
                 {item.companyName || `${item.user?.firstName ?? ''} ${item.user?.lastName ?? ''}`}
               </Text>
               <Text style={styles.meta}>
-                {item.category?.name} · ⭐ {item.avgRating || '—'} ({item.reviewsCount})
+                {item.category?.name} · {formatRating(item.avgRating, item.reviewsCount, true)}
               </Text>
               <Text style={styles.meta}>{item.user?.city}</Text>
             </Pressable>

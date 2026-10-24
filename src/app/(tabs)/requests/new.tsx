@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { api, ApiError } from '@/lib/api';
@@ -12,6 +13,7 @@ import { Brand } from '@/constants/theme';
 
 export default function NewRequestScreen() {
   const { user } = useAuth();
+  const { ref: scrollRef, scrollToTop } = useScrollToTop();
   const currencySymbol = useCurrencySymbol(user?.countryCode);
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -67,6 +69,7 @@ export default function NewRequestScreen() {
       router.replace(`/(tabs)/requests/${request.id}`);
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'Impossible de publier la demande');
+      scrollToTop();
     } finally {
       setLoading(false);
     }
@@ -74,7 +77,7 @@ export default function NewRequestScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <View style={styles.aiBox}>
           <Text style={styles.aiTitle}>✨ Assistant IA</Text>
           <Text style={styles.aiHint}>Décrivez votre besoin en une phrase, l&apos;assistant pré-remplit le formulaire.</Text>

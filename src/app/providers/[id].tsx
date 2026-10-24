@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { formatRating } from '@/lib/format';
 import { api, ApiError } from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
 import { LoyaltyAccount, ProviderProfile, Review, ServiceOffering } from '@/lib/types';
@@ -119,7 +120,7 @@ export default function ProviderProfileScreen() {
         <View style={styles.card}>
           <Text style={styles.name}>{name || 'Prestataire'}</Text>
           <Text style={styles.muted}>{provider.category?.name}</Text>
-          <Text style={styles.muted}>⭐ {provider.avgRating || '—'} ({provider.reviewsCount} avis)</Text>
+          <Text style={styles.muted}>{formatRating(provider.avgRating, provider.reviewsCount)}{provider.reviewsCount > 0 ? ` · ${provider.reviewsCount} avis` : ''}</Text>
           <Text style={styles.description}>{provider.description}</Text>
           <Text style={styles.muted}>{provider.experienceYears} ans d&apos;expérience · {provider.completedBookingsCount} prestations réalisées</Text>
           {provider.verificationLevel !== 'none' && <Text style={styles.verified}>✓ Vérifié ({provider.verificationLevel})</Text>}

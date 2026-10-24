@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/lib/auth-context';
@@ -11,6 +12,7 @@ import { Brand } from '@/constants/theme';
 
 export default function ProfileScreen() {
   const { user, logout, refresh } = useAuth();
+  const { ref: scrollRef, scrollToTop } = useScrollToTop();
   const { countries } = useCountry();
   const [form, setForm] = useState({ firstName: '', lastName: '', phone: '', city: '', countryCode: 'TN' });
   const [message, setMessage] = useState<string | null>(null);
@@ -36,8 +38,10 @@ export default function ProfileScreen() {
       await api.patch('/users/me', form);
       await refresh();
       setMessage('Profil mis à jour.');
+      scrollToTop();
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'Mise à jour impossible');
+      scrollToTop();
     } finally {
       setSaving(false);
     }
@@ -51,7 +55,7 @@ export default function ProfileScreen() {
   if (!user) return null;
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+    <ScrollView ref={scrollRef} style={styles.screen} contentContainerStyle={styles.content}>
       <Text style={styles.title}>Mon profil</Text>
       <View style={styles.badge}>
         <Text style={styles.badgeText}>{user.role === 'provider' ? 'Prestataire' : user.role === 'admin' ? 'Admin' : 'Client'}</Text>
